@@ -157,15 +157,22 @@ iquery("  store(r_exec( repro1r, 'output_attrs= 8',
        #get residuals for each time series
 
        ii<-5   # get the middle pixel (5 for 3*3 matrix)
-
+#AR model
        resar1<-coredata(residuals(gls(fevi3b312t1 ~ tl+co+co2+co3+si+si2+si3,correlation=corAR1())))
 
-       p.Vt1  <- sctest(efp(fevi3b312t1 ~ tl+co+co2+co3+si+si2+si3,    h = 0.15, type = \"OLS-CUSUM\", spatial1=as.numeric(rn[[ii]]))  )
-       p.Vt2  <- sctest(efp(fevi3b312t1 ~ tl+co+co2+co3+si+si2+si3,    h = 0.15, type = \"OLS-MOSUM\", spatial1=as.numeric(rn[[ii]]))  )
+      # p.Vt1  <- sctest(efp(fevi3b312t1 ~ tl+co+co2+co3+si+si2+si3,    h = 0.15, type = \"OLS-CUSUM\", spatial1=as.numeric(rn[[ii]]))  )
+      # p.Vt2  <- sctest(efp(fevi3b312t1 ~ tl+co+co2+co3+si+si2+si3,    h = 0.15, type = \"OLS-MOSUM\", spatial1=as.numeric(rn[[ii]]))  )
+      # use the original strucchange package
+       p.Vt1  <- sctest(as.numeric(rn[[ii]]) ~ 0, h = 0.15, type = \"OLS-CUSUM\", spatial1=as.numeric(rn[[ii]]))  )
+       p.Vt2  <- sctest(as.numeric(rn[[ii]]) ~ 0, h = 0.15, type = \"OLS-MOSUM\", spatial1=as.numeric(rn[[ii]]))  )
+  
+
        p.Vt3 <-  sctest(efp(fevi3b312t1 ~  tl+co+co2+co3+si+si2+si3,   h = 0.15, type = \"OLS-CUSUM\" ))
        p.Vt4 <-  sctest(efp(fevi3b312t1 ~  tl+co+co2+co3+si+si2+si3,   h = 0.15, type = \"OLS-MOSUM\" ))
-       p.Vt5 <-  sctest(efp(fevi3b312t1 ~  tl+co+co2+co3+si+si2+si3,   h = 0.15, type = \"OLS-CUSUM\" ,spatial1=as.numeric(resar1)) )
-       p.Vt6 <-  sctest(efp(fevi3b312t1 ~  tl+co+co2+co3+si+si2+si3,   h = 0.15, type = \"OLS-MOSUM\" ,spatial1=as.numeric(resar1)) )
+      # p.Vt5 <-  sctest(efp(fevi3b312t1 ~  tl+co+co2+co3+si+si2+si3,   h = 0.15, type = \"OLS-CUSUM\" ,spatial1=as.numeric(resar1)) )
+      # p.Vt6 <-  sctest(efp(fevi3b312t1 ~  tl+co+co2+co3+si+si2+si3,   h = 0.15, type = \"OLS-MOSUM\" ,spatial1=as.numeric(resar1)) )
+       p.Vt5 <-  sctest(efp(as.numeric(resar1) ~ 0,   h = 0.15, type = \"OLS-CUSUM\"  ))
+       p.Vt6 <-  sctest(efp(as.numeric(resar1) ~ 0,   h = 0.15, type = \"OLS-MOSUM\"  ))
 
        spcusum1  <-p.Vt1$p.value*1.0 # spautolm residuals CUSUM
        spmosum1  <-p.Vt2$p.value*1.0 # spautolm residuals  MOSUM
